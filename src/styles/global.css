@@ -1,4 +1,4 @@
-/* Tokens tomados del Figma "01 · Acceso y verificación" */
+
 :root {
   --bg: #f4f6f9;
   --brand-bg: #111f33;
@@ -31,7 +31,7 @@ p { margin: 0; }
 button, input { font: inherit; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
-/* ---------- Estructura de dos columnas ---------- */
+
 .shell { display: flex; align-items: stretch; min-height: 100vh; background: var(--bg); }
 
 .brand {
@@ -75,7 +75,7 @@ button, input { font: inherit; }
 .session-note { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-muted); }
 .privacy { width: 420px; max-width: 100%; text-align: center; font-size: 11px; line-height: 1.6; color: var(--text-muted); }
 
-/* ---------- Campos ---------- */
+
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field__label { font-size: 14px; font-weight: 600; line-height: 1.6; }
 .field__control {
@@ -94,7 +94,7 @@ button, input { font: inherit; }
 .field__control--code { height: 54px; }
 .field__input--code { font-family: var(--font-mono); font-size: 24px; text-align: center; letter-spacing: 0.35em; padding-left: 0.35em; }
 
-/* ---------- Avisos ---------- */
+
 .notice { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 8px; font-size: 13px; line-height: 1.6; color: var(--text); }
 .notice svg { flex-shrink: 0; margin-top: 2px; }
 .notice--error { background: var(--error-bg); }
@@ -102,7 +102,7 @@ button, input { font: inherit; }
 .notice--info { background: var(--info-bg); }
 .notice__title { line-height: 1.5; margin-bottom: 5px; }
 
-/* ---------- Botones ---------- */
+
 .btn {
   display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
   min-height: 48px; padding: 12px 18px; border-radius: 8px; border: 1px solid transparent;
@@ -118,8 +118,10 @@ button, input { font: inherit; }
 .btn--loading:disabled { background: var(--primary); color: #fff; opacity: 0.75; }
 .spin { animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 50% { opacity: 0.55; } }
 
-/* ---------- Pantallas angostas (el Figma solo define escritorio) ---------- */
+.stack { display: flex; flex-direction: column; gap: 16px; }
+
 @media (max-width: 960px) {
   .shell { flex-direction: column; }
   .brand { width: auto; padding: 24px; gap: 0; }
@@ -127,7 +129,6 @@ button, input { font: inherit; }
   .main { padding: 40px 20px 48px; }
 }
 
-/* ======================= App autenticada ======================= */
 .app { display: flex; min-height: 100vh; background: var(--bg); }
 .sidebar {
   position: relative; width: 228px; flex-shrink: 0; background: var(--brand-bg); color: #fff;
@@ -158,3 +159,80 @@ button, input { font: inherit; }
 .content { padding: 38px 42px 40px; display: flex; flex-direction: column; gap: 28px; }
 .app__footer { display: flex; justify-content: space-between; padding: 0 42px 24px; font-size: 11px; color: var(--text-muted); }
 .app__footer-mono { font-family: var(--font-mono); }
+
+.wizard { display: flex; flex-direction: column; gap: 28px; }
+.steps { display: flex; gap: 16px; list-style: none; margin: 0; padding: 0; }
+.step {
+  flex: 1; min-width: 0; min-height: 84px; display: flex; align-items: center; gap: 12px; padding: 14px;
+  background: #fff; border: 1px solid var(--border); border-radius: 8px;
+}
+.step--active { background: var(--info-bg); border: 2px solid var(--primary); padding: 13px; }
+.step__dot {
+  width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: #dce6f2; color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;
+}
+.step--active .step__dot { background: var(--primary); color: #fff; }
+.step--done .step__dot { background: #eaf5f3; color: #246b67; }
+.step__text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.step__title { font-size: 14px; font-weight: 600; }
+.step--active .step__title { color: var(--primary); }
+.step__status { font-size: 11px; color: var(--text-muted); }
+
+.cols { display: flex; gap: 28px; align-items: flex-start; }
+.cols > .wcard:first-child { width: 620px; flex-shrink: 0; }
+.cols > .wcard:last-child { flex: 1; min-width: 0; }
+.wcard {
+  background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 28px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.wcard--wide { width: 100%; max-width: 690px; }
+.wcard__title { font-size: 20px; font-weight: 600; line-height: 1.3; margin: 0; }
+.wcard__text { font-size: 14px; line-height: 1.65; color: var(--text-muted); }
+.wcard__text--small { font-size: 13px; }
+.wcard__text--ink { color: var(--text); }
+
+.status { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 8px; }
+.status__head { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.status__body { font-size: 13px; line-height: 1.6; color: var(--text-muted); padding-left: 30px; }
+.status--info { background: var(--info-bg); } .status--info .status__head { color: var(--primary); }
+.status--success { background: #eaf5f3; } .status--success .status__head { color: #246b67; }
+/* el amarillo del aviso "venció" se tomó a ojo de la captura: confirmar el hex en Figma */
+.status--warning { background: #fcf4dc; } .status--warning .status__head { color: #7a5300; }
+.status--error { background: var(--error-bg); } .status--error .status__head { color: var(--error-text); }
+
+.os {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 14px; text-align: left;
+  background: #fff; border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer;
+}
+div.os { cursor: default; }
+.os--selected { background: var(--info-bg); border: 2px solid var(--primary); padding: 13px; }
+.os--selected svg { color: var(--primary); }
+.os__name { flex: 1; font-size: 14px; font-weight: 600; }
+.os__id { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.os-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; }
+.link-underline { align-self: flex-start; background: none; border: 0; padding: 0; color: var(--primary); font-size: 13px; text-decoration: underline; cursor: pointer; }
+
+.cmd { display: flex; flex-direction: column; gap: 14px; padding: 16px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
+.cmd__text { font-family: var(--font-mono); font-size: 12px; line-height: 1.7; word-break: break-all; }
+.btn--blue { color: var(--primary); }
+.btn--wizard:disabled { background: #dce6f2; color: var(--text-muted); }
+
+.hostcard { display: flex; flex-direction: column; gap: 12px; padding: 20px 18px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
+.hostcard__name { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 600; }
+.hostcard__name svg { color: var(--primary); }
+.hostcard__os { font-family: var(--font-mono); font-size: 12px; }
+.hostcard__meta { font-size: 12px; color: var(--text-muted); }
+
+.skel-box { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #f8fafc; border-radius: 8px; }
+.skel-bar { height: 12px; background: #dce6f2; border-radius: 999px; animation: pulse 1.4s ease-in-out infinite; }
+.skel-bar--lg { height: 22px; }
+
+@media (max-width: 960px) {
+  .app { flex-direction: column; }
+  .sidebar { width: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 16px 20px; }
+  .sidebar__links { flex-direction: row; }
+  .sidebar__account { position: static; flex-direction: row; align-items: center; gap: 16px; }
+  .contextbar, .content, .app__footer { padding-left: 20px; padding-right: 20px; }
+  .steps, .cols { flex-direction: column; }
+  .cols > .wcard:first-child { width: 100%; }
+}
