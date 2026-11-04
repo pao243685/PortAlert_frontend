@@ -1,7 +1,11 @@
 import { request } from "./client";
 
 export type User = { id: number; email: string; totp_enabled: boolean };
-export type LoginOut = { access_token: string; token_type: string };
+export type LoginOut = {
+  access_token: string | null;
+  mfa_required: boolean;
+  mfa_token: string | null;
+};
 export type TotpSetup = { secret: string; otpauth_uri: string };
 export type Host = {
   id: number;
@@ -18,6 +22,9 @@ export const register = (email: string, password: string) =>
 
 export const login = (email: string, password: string) =>
   request<LoginOut>("/auth/login", { method: "POST", form: { username: email, password } });
+
+export const loginTotp = (mfa_token: string, code: string) =>
+  request<LoginOut>("/auth/login/totp", { method: "POST", json: { mfa_token, code } });
 
 export const me = () => request<User>("/auth/me", { auth: true });
 export const totpSetup = () => request<TotpSetup>("/auth/totp/setup", { method: "POST", auth: true });

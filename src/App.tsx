@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Panel from "./pages/Panel";
 import Register from "./pages/Register";
 import TotpSetup from "./pages/TotpSetup";
+import TotpVerify from "./pages/TotpVerify";
 import Vincular from "./pages/Vincular";
 
 export default function App() {
@@ -11,6 +12,7 @@ export default function App() {
     <Routes>
       <Route path="/registro" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/login/verificacion" element={<TotpVerify />} />
       <Route path="/2fa/configurar" element={<RequireAuth><TotpSetup /></RequireAuth>} />
       <Route path="/vincular" element={<RequireAuth><Vincular /></RequireAuth>} />
       <Route path="/panel" element={<RequireAuth><Panel /></RequireAuth>} />
