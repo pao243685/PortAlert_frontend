@@ -1,7 +1,8 @@
 import { request } from "./client";
 
-export type User = { id: number; email: string };
+export type User = { id: number; email: string; totp_enabled: boolean };
 export type LoginOut = { access_token: string; token_type: string };
+export type TotpSetup = { secret: string; otpauth_uri: string };
 export type Host = {
   id: number;
   name: string;
@@ -19,6 +20,9 @@ export const login = (email: string, password: string) =>
   request<LoginOut>("/auth/login", { method: "POST", form: { username: email, password } });
 
 export const me = () => request<User>("/auth/me", { auth: true });
+export const totpSetup = () => request<TotpSetup>("/auth/totp/setup", { method: "POST", auth: true });
+export const totpEnable = (code: string) =>
+  request<User>("/auth/totp/enable", { method: "POST", json: { code }, auth: true });
 
 export const listHosts = () => request<Host[]>("/hosts", { auth: true });
 export const createEnrollToken = () =>
