@@ -1,4 +1,4 @@
-
+/* Tokens tomados del Figma "01 · Acceso y verificación" */
 :root {
   --bg: #f4f6f9;
   --brand-bg: #111f33;
@@ -31,7 +31,7 @@ p { margin: 0; }
 button, input { font: inherit; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
-
+/* ---------- Estructura de dos columnas ---------- */
 .shell { display: flex; align-items: stretch; min-height: 100vh; background: var(--bg); }
 
 .brand {
@@ -75,7 +75,7 @@ button, input { font: inherit; }
 .session-note { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-muted); }
 .privacy { width: 420px; max-width: 100%; text-align: center; font-size: 11px; line-height: 1.6; color: var(--text-muted); }
 
-
+/* ---------- Campos ---------- */
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field__label { font-size: 14px; font-weight: 600; line-height: 1.6; }
 .field__control {
@@ -94,7 +94,7 @@ button, input { font: inherit; }
 .field__control--code { height: 54px; }
 .field__input--code { font-family: var(--font-mono); font-size: 24px; text-align: center; letter-spacing: 0.35em; padding-left: 0.35em; }
 
-
+/* ---------- Avisos ---------- */
 .notice { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 8px; font-size: 13px; line-height: 1.6; color: var(--text); }
 .notice svg { flex-shrink: 0; margin-top: 2px; }
 .notice--error { background: var(--error-bg); }
@@ -102,7 +102,7 @@ button, input { font: inherit; }
 .notice--info { background: var(--info-bg); }
 .notice__title { line-height: 1.5; margin-bottom: 5px; }
 
-
+/* ---------- Botones ---------- */
 .btn {
   display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
   min-height: 48px; padding: 12px 18px; border-radius: 8px; border: 1px solid transparent;
@@ -118,10 +118,33 @@ button, input { font: inherit; }
 .btn--loading:disabled { background: var(--primary); color: #fff; opacity: 0.75; }
 .spin { animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- 2FA: QR + clave manual ---------- */
+.qr { display: flex; flex-direction: column; gap: 16px; }
+.qr__box {
+  width: 160px; height: 160px; padding: 8px; background: #fff; border: 1px solid var(--border);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+}
+.qr__label { font-size: 12px; line-height: 1.6; color: var(--text-muted); }
+.manual-key {
+  display: flex; align-items: center; gap: 12px; padding: 12px; background: #fff;
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.manual-key__value { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; word-break: break-all; }
+.skeleton { background: var(--disabled-bg); border-radius: 8px; animation: pulse 1.4s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: 0.55; } }
+.preparing { display: flex; align-items: center; gap: 12px; font-size: 14px; line-height: 1.6; }
 
+/* ---------- Vincular / panel ---------- */
+.token-box { padding: 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; word-break: break-all; }
 .stack { display: flex; flex-direction: column; gap: 16px; }
+.panel { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 24px; }
+.panel__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+.card dt { font-size: 12px; color: var(--text-muted); }
+.card dd { margin: 0 0 8px; font-size: 15px; }
 
+/* ---------- Pantallas angostas (el Figma solo define escritorio) ---------- */
 @media (max-width: 960px) {
   .shell { flex-direction: column; }
   .brand { width: auto; padding: 24px; gap: 0; }
@@ -129,6 +152,7 @@ button, input { font: inherit; }
   .main { padding: 40px 20px 48px; }
 }
 
+/* ======================= App autenticada (Figma "02 · Vincular mi equipo") ======================= */
 .app { display: flex; min-height: 100vh; background: var(--bg); }
 .sidebar {
   position: relative; width: 228px; flex-shrink: 0; background: var(--brand-bg); color: #fff;
@@ -235,4 +259,142 @@ div.os { cursor: default; }
   .contextbar, .content, .app__footer { padding-left: 20px; padding-right: 20px; }
   .steps, .cols { flex-direction: column; }
   .cols > .wcard:first-child { width: 100%; }
+}
+
+/* ======================= Primera revisión (Figma "03 · Primera revisión") ======================= */
+.sidebar__links { gap: 8px; }
+.sidebar__link--active { background: #263a54; color: #fff; font-weight: 600; }
+
+.data-context { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: -8px; }
+.eval { display: flex; gap: 24px; align-items: stretch; }
+.eval > .wcard { flex: 1; min-width: 0; }
+.wcard__subtitle { font-size: 14px; font-weight: 600; margin: 0; }
+.wcard--dark { background: var(--brand-bg); border-color: var(--brand-bg); color: #fff; gap: 18px; }
+.wcard--center { align-items: center; text-align: center; padding: 48px 28px; gap: 16px; }
+.wcard__text--narrow { max-width: 540px; }
+.wcard__title--lg { font-size: 22px; }
+.skeleton--dark, .skel-bar--dark { background: #263a54; }
+.sec-title { font-size: 16px; font-weight: 600; margin: 0; }
+
+.score { display: flex; align-items: center; gap: 16px; }
+.score__value { display: flex; align-items: baseline; gap: 4px; font-size: 72px; font-weight: 600; line-height: 1; margin: 0; }
+.score__max { font-family: var(--font-mono); font-size: 15px; font-weight: 400; color: var(--text-muted); }
+.score__read { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.score__label { font-size: 17px; line-height: 1.6; }
+.score__text { font-size: 12px; line-height: 1.6; color: var(--text-muted); }
+.legend-small { font-size: 11px; line-height: 1.6; color: var(--text-muted); }
+.legend-small--md { font-size: 12px; }
+.host-dark__name { font-size: 18px; font-weight: 600; }
+.host-dark__os { font-family: var(--font-mono); font-size: 12px; color: var(--brand-text); }
+.host-dark__muted { font-size: 13px; color: var(--brand-text); }
+.host-dark__last { font-size: 20px; line-height: 1.6; }
+.host-dark__small { font-size: 12px; color: var(--brand-text); }
+
+/* Severidad: un solo estilo para todas las vistas de hallazgos (el del Resumen inicial) */
+.sev-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; line-height: normal; color: #fff; white-space: nowrap; }
+.sev-chip--critica { background: #d68888; }
+.sev-chip--alta { background: #e88347; }
+.sev-chip--media { background: #c0a03d; }
+.sev-chip--baja { background: #226e60; }
+.sev-chip--critica.sev-chip--on-card { background: #fff7f9; color: #000; }
+.sev-chip--alta.sev-chip--on-card { color: #fff7f3; }
+.sev-counters { display: flex; gap: 16px; }
+.sev-card { flex: 1; min-width: 0; min-height: 90px; padding: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); border-radius: 12px; }
+.sev-card--critica { background: #d68888; }
+.sev-card--alta { background: #fff0e7; }
+.sev-card--media { background: #fcf5df; }
+.sev-card--baja { background: #eaf5f3; }
+.sev-card__n { font-size: 28px; font-weight: 600; line-height: 1.6; margin: 0; color: var(--text); }
+.sev-card--critica .sev-card__n { color: #fff; }
+.sev-card__n-skel { width: 32px; height: 30px; border-radius: 8px; }
+.sev-legend { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted); }
+
+.aviso { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 8px; font-size: 13px; line-height: 1.6; color: var(--text); }
+.aviso svg { flex-shrink: 0; margin-top: 2px; }
+.aviso--highlight { background: #f8ffdd; box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25); }
+.aviso--info { background: var(--info-bg); }
+
+.findings { display: flex; flex-direction: column; gap: 18px; }
+.finding { display: flex; flex-direction: column; gap: 20px; padding: 28px; background: #fff; border: 1px solid var(--border); border-radius: 12px; font-size: 13px; line-height: 1.6; }
+.finding__head { display: flex; align-items: center; gap: 24px; }
+.finding__title { flex: 1; min-width: 0; margin: 0; font-size: 17px; font-weight: 600; }
+.finding__conf { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
+.finding__row { display: flex; gap: 28px; align-items: flex-start; }
+.finding__col { flex-shrink: 0; width: 160px; }
+.finding__col--wide { width: 230px; }
+.finding__muted { color: var(--text-muted); }
+.mono { font-family: var(--font-mono); }
+.mono--sm { font-family: var(--font-mono); font-size: 12px; word-break: break-all; }
+.finding__sep { width: 100%; height: 1px; border: 0; margin: 0; background: var(--divider); }
+.finding__foot { display: flex; align-items: center; gap: 24px; }
+.finding__rec { flex: 1; min-width: 0; margin: 0; color: var(--text-muted); }
+
+.switch { display: flex; align-items: center; gap: 10px; flex-shrink: 0; cursor: pointer; }
+.switch__track { position: relative; width: 36px; height: 22px; padding: 0; border: 0; border-radius: 999px; background: #c7d2df; cursor: pointer; }
+.switch__track--on { background: var(--primary); }
+.switch__knob { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 0.15s; }
+.switch__track--on .switch__knob { transform: translateX(14px); }
+.switch__label { font-size: 12px; white-space: nowrap; }
+
+.finish { display: flex; align-items: center; gap: 20px; }
+.finish__help { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+.finish__small { font-size: 11px; line-height: 1.6; color: var(--text-muted); margin-top: 4px; }
+
+@media (max-width: 960px) {
+  .eval, .sev-counters, .finding__row, .finding__foot, .finish { flex-direction: column; align-items: stretch; }
+  .finding__head { flex-wrap: wrap; }
+  .finding__col, .finding__col--wide { width: auto; }
+}
+
+/* ======================= Alertas y atención (Figma "05 · Alertas y atención") ======================= */
+.tabs { display: flex; gap: 4px; padding: 4px; background: #fff; border: 1px solid var(--border); border-radius: 12px; }
+.tab { width: 140px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: 13px; cursor: pointer; }
+.tab--active { background: var(--info-bg); color: var(--primary); font-weight: 600; }
+.wcard--empty { padding: 90px 28px; gap: 14px; min-height: 390px; justify-content: center; }
+.empty-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--info-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+.empty-icon + .wcard__title { margin-top: 4px; }
+.wcard--empty .wcard__text { line-height: 1.8; }
+
+.alert-row { gap: 12px; text-decoration: none; color: inherit; }
+.alert-row:hover { border-color: var(--primary); }
+.alert-row__top { display: flex; align-items: center; gap: 12px; }
+.mono--ref { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+.status-chip { padding: 5px 8px; border-radius: 6px; font-size: 12px; font-weight: 500; line-height: normal; }
+.status-chip--nueva { background: var(--info-bg); color: var(--primary); }
+.status-chip--atendida { background: #eaf5f3; color: #226e60; }   /* provisional: sin diseño */
+.status-chip--ignorada { background: var(--disabled-bg); color: var(--text-muted); }   /* provisional: sin diseño */
+
+.back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; align-self: flex-start; color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+.alert-summary { display: flex; flex-direction: column; gap: 18px; }
+.alert-summary__ref { display: flex; align-items: center; gap: 12px; }
+.alert-summary__title { margin: 0; font-size: 34px; font-weight: 400; line-height: 1.2; }
+.alert-summary__type { font-size: 12px; }
+.alert-summary__when { font-size: 13px; line-height: 1.7; color: var(--text-muted); }
+.alert-summary__data { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-size: 12px; color: var(--text-muted); }
+
+.wcard--flush { padding: 32px; gap: 0; }
+.wcard__subtitle--lg { font-size: 16px; }
+.alert-desc { display: flex; flex-direction: column; gap: 14px; padding-bottom: 24px; }
+.alert-desc__text { font-size: 14px; line-height: 1.8; }
+.datum { display: flex; gap: 24px; align-items: flex-start; padding: 18px 0; border-top: 1px solid var(--border); font-size: 13px; line-height: 1.7; }
+.datum__label { flex-shrink: 0; width: 160px; font-weight: 500; color: var(--text-muted); }
+.datum__value { flex: 1; min-width: 0; word-break: break-word; }
+.alert-notice { padding-top: 12px; }
+.alert-notice .aviso p + p { margin-top: 5px; }
+
+.overlay { position: fixed; inset: 0; z-index: 50; background: rgba(17, 31, 51, 0.6); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.dialog { width: 580px; max-width: 100%; background: #fff; border-radius: 16px; padding: 32px; display: flex; flex-direction: column; gap: 22px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); }
+.dialog__title { margin: 0; font-size: 24px; font-weight: 600; line-height: 1.6; }
+.dialog__subtitle { font-size: 14px; line-height: 1.6; color: var(--text-muted); }
+.dialog__note { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+.dialog__actions { display: flex; justify-content: flex-end; gap: 12px; }
+.check { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.6; cursor: pointer; }
+.check input { flex-shrink: 0; width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--primary); cursor: pointer; }
+
+@media (max-width: 960px) {
+  .tabs { overflow-x: auto; }
+  .tab { flex: 1 0 auto; }
+  .datum { flex-direction: column; gap: 4px; }
+  .datum__label { width: auto; }
 }

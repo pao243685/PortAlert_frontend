@@ -55,10 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshUser().catch(() => tokenStore.clear()).finally(() => setLoading(false));
   }, [refreshUser]);
 
-  // Con equipo vinculado va al panel; sin equipo, a vincularlo.
-  const destinoTrasLogin = useCallback(async (_user: User) => {
-    const hosts = await listHosts();
-    return hosts.length ? "/panel" : "/vincular";
+  const destinoTrasLogin = useCallback(async (u: User) => {
+    if (!u.totp_enabled) return "/2fa/configurar";
+    const host = (await listHosts())[0];
+    if (!host || host.score === null) return "/vincular"; // sin equipo, o sin primer reporte todavía
+    return host.review_completed_at ? "/panel" : "/revision";
   }, []);
 
   const value = useMemo(

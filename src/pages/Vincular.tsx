@@ -1,11 +1,12 @@
-
+// Figma: "02 · Vincular mi equipo" (nodos 28:10838, 28:10940, 28:11045, 28:11126, 28:11219,
+// 28:11310, 28:11391, 28:11474, 28:11553).
 import { ArrowRight, Check, CircleDot, Copy, Monitor, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { createEnrollToken, installerUrl, listHosts } from "../api/auth";
 import type { EnrollToken, Host, InstallerOS } from "../api/auth";
-import { API_URL, ApiError } from "../api/client";
+import { API_URL, ApiError, downloadFile } from "../api/client";
 import { AppShell } from "../components/AppShell";
 import { Button, StatusNotice } from "../components/ui";
 
@@ -79,8 +80,10 @@ export default function Vincular() {
     }
   }, []);
 
+  // Al entrar: si ya hay un equipo vinculado, se muestra su estado.
   useEffect(() => { void refreshHost(); }, [refreshHost]);
 
+  // Consultar cada 3 s mientras esperamos al instalador o al primer reporte.
   const polling = !host ? phase === "ready" || phase === "waiting" : host.score === null;
   useEffect(() => {
     if (!polling) return;
@@ -88,6 +91,7 @@ export default function Vincular() {
     return () => clearInterval(id);
   }, [polling, refreshHost]);
 
+  // El token dura 10 min: al vencer, avisar.
   useEffect(() => {
     if (!token || host) return;
     const left = new Date(token.expires_at).getTime() - Date.now();
@@ -104,12 +108,7 @@ export default function Vincular() {
     try {
       const t = await createEnrollToken();
       setToken(t);
-      const a = document.createElement("a"); // el backend responde con Content-Disposition: attachment
-      a.href = installerUrl(t.enroll_token, os, API_URL);
-      a.rel = "noopener";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      await downloadFile(installerUrl(t.enroll_token, os, API_URL), `instalar-portalert.${os === "linux" ? "sh" : "ps1"}`);
       setPhase("ready");
     } catch (err) {
       setPhase("idle");
@@ -128,9 +127,10 @@ export default function Vincular() {
     try {
       await navigator.clipboard.writeText(command);
     } catch {
+      /* sin permiso de portapapeles: el comando sigue visible para copiarlo a mano */
     }
     setCopied(true);
-    setPhase("waiting"); 
+    setPhase("waiting"); // asumimos que lo va a ejecutar: pasamos a la confirmación en vivo
   }
 
   const osPicker = choosingOs ? (
@@ -154,7 +154,8 @@ export default function Vincular() {
     </div>
   );
   const changeOs = <button type="button" className="link-underline" onClick={() => setChoosingOs((c) => !c)}>Cambiar sistema operativo</button>;
-  
+
+  // ------------------------------------------------------------------ vista
   let active: 0 | 1 | 2 | 3 = 1;
   let body: ReactNode;
 
@@ -166,7 +167,7 @@ export default function Vincular() {
         <StatusNotice variant="success" title="Todo listo">Equipo vinculado y primer reporte recibido. Ya puedes abrir el panel de tu equipo.</StatusNotice>
         <HostCard host={host} />
         <p className="wcard__text wcard__text--small">La configuración de tu único equipo está completada. Consulta en el panel los datos del reporte recibido.</p>
-        <Button icon={<ArrowRight size={18} aria-hidden />} onClick={() => navigate("/panel")}>Ver resumen de mi equipo</Button>
+        <Button icon={<ArrowRight size={18} aria-hidden />} onClick={() => navigate("/revision")}>Ver resumen de mi equipo</Button>
       </Card>
     ) : (
       <Card title="Confirmación en vivo" wide>

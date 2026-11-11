@@ -42,8 +42,8 @@ export default function Register() {
       const clean = email.trim().toLowerCase();
       await register(clean, password);
       const res = await login(clean, password);
-      await signIn(res.access_token);
-      navigate("/vincular", { replace: true });
+      await signIn(res.access_token!);
+      navigate("/2fa/configurar", { replace: true }); // paso 2: verificación en dos pasos
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         setErrors({ form: "Revisa los campos indicados para continuar.", email: "Este correo ya está registrado. Inicia sesión." });

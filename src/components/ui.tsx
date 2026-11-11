@@ -1,6 +1,6 @@
-import { CircleAlert, CircleCheck, CircleX, Eye, EyeOff, Info, Loader2, TriangleAlert } from "lucide-react";
+import { CircleAlert, CircleCheck, CircleX, Eye, EyeOff, Info, Loader2, TriangleAlert, WifiOff } from "lucide-react";
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
-import { useId, useState } from "react";
+import { forwardRef, useId, useState } from "react";
 
 export function Notice({
   variant, title, children, role, triangle,
@@ -72,9 +72,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   inline?: boolean;
 };
 
-export function Button({ variant = "primary", loading, icon, inline, children, disabled, className, ...rest }: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { variant = "primary", loading, icon, inline, children, disabled, className, ...rest },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       className={`btn btn--${variant}${inline ? " btn--inline" : ""}${loading ? " btn--loading" : ""} ${className ?? ""}`}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
@@ -84,7 +88,7 @@ export function Button({ variant = "primary", loading, icon, inline, children, d
       <span>{children}</span>
     </button>
   );
-}
+});
 
 /** Aviso de estado del asistente (Figma: "Aviso de estado"). */
 export function StatusNotice({
@@ -100,5 +104,17 @@ export function StatusNotice({
       <p className="status__head">{icon}<span>{title}</span></p>
       {children && <p className="status__body">{children}</p>}
     </div>
+  );
+}
+
+/** Estado de error de red (Figma 34:15833): mismo patrón en todas las vistas con datos. */
+export function NetworkErrorCard({ onRetry }: { onRetry: () => void }) {
+  return (
+    <section className="wcard wcard--center">
+      <WifiOff size={32} color="#285fdb" aria-hidden />
+      <h2 className="wcard__title">No pudimos cargar la información</h2>
+      <p className="wcard__text wcard__text--narrow">Revisa tu conexión a internet e inténtalo de nuevo. No se muestran datos que no pudimos recuperar.</p>
+      <Button inline onClick={onRetry}>Reintentar</Button>
+    </section>
   );
 }
