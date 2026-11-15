@@ -18,10 +18,10 @@ export function SeverityBadge({ severity, onCard = false }: { severity: Severity
   );
 }
 
-export function SeverityCounters({ counts }: { counts: Record<Severity, number> | null }) {
+export function SeverityCounters({ counts, order = SEVERITIES }: { counts: Record<Severity, number> | null; order?: Severity[] }) {
   return (
     <div className="sev-counters">
-      {SEVERITIES.map((s) => (
+      {order.map((s) => (
         <div key={s} className={`sev-card sev-card--${s}`}>
           <SeverityBadge severity={s} onCard />
           {counts ? <p className="sev-card__n">{counts[s]}</p> : <span className="sev-card__n-skel skel-bar" aria-hidden />}

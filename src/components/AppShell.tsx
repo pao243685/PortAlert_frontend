@@ -22,9 +22,9 @@ export function AppShell({
           <NavLink to="/alertas" className={({ isActive }) => `sidebar__link${isActive ? " sidebar__link--active" : ""}`}>
             <Bell size={20} aria-hidden /><span>Alertas</span>
           </NavLink>
-          <span className="sidebar__link sidebar__link--disabled" aria-disabled="true" title="Próximamente">
+          <NavLink to="/puertos" className={({ isActive }) => `sidebar__link${isActive ? " sidebar__link--active" : ""}`}>
             <Network size={20} aria-hidden /><span>Puertos</span>
-          </span>
+          </NavLink>
           <span className="sidebar__link sidebar__link--disabled" aria-disabled="true" title="Próximamente">
             <Monitor size={20} aria-hidden /><span>Mi equipo</span>
           </span>

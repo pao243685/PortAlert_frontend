@@ -1,46 +1,18 @@
 // Figma: "03 · Primera revisión" — Resumen inicial (34:15365), Cargando (34:15599),
 // Sin hallazgos (34:15720) y Error de red (34:15833).
-import { Info, WifiOff } from "lucide-react";
+import { WifiOff } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { completeReview, getReview, setNormal } from "../api/auth";
 import type { Finding, Review } from "../api/auth";
 import { ApiError } from "../api/client";
-import { fmtDate, OS_LABEL } from "../lib/format";
+import { fmtDate, OS_LABEL, scoreBand } from "../lib/format";
 import { AppShell } from "../components/AppShell";
 import { SeverityBadge, SeverityCounters, SeverityLegend } from "../components/Severity";
-import { Button, StatusNotice } from "../components/ui";
+import { Aviso, Button, StatusNotice, Switch } from "../components/ui";
 
 const PUBLIC_ADDR = new Set(["0.0.0.0", "::", "*"]);
-
-// Puntaje: Bueno 80–100, Regular 50–79, Crítico 0–49 (leyenda del Figma).
-function scoreBand(score: number) {
-  if (score >= 80) return { label: "Bueno", color: "#226e60", text: "Mantén la revisión periódica." };
-  if (score >= 50) return { label: "Regular", color: "#805e0e", text: "Hay señales que conviene revisar." };
-  // El Figma no trae el texto del rango crítico: redacción propia, confirmar.
-  return { label: "Crítico", color: "#a52843", text: "Hay riesgos que conviene atender pronto." };
-}
-
-function Aviso({ tone, children }: { tone: "highlight" | "info"; children: ReactNode }) {
-  return (
-    <div className={`aviso aviso--${tone}`} role="note">
-      <Info size={18} color="#285fdb" aria-hidden />
-      <p>{children}</p>
-    </div>
-  );
-}
-
-function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
-  return (
-    <label className="switch">
-      <button type="button" role="switch" aria-checked={checked} className={`switch__track${checked ? " switch__track--on" : ""}`} onClick={() => onChange(!checked)}>
-        <span className="switch__knob" />
-      </button>
-      <span className="switch__label">{label}</span>
-    </label>
-  );
-}
 
 function FindingCard({ f, onToggle }: { f: Finding; onToggle: (v: boolean) => void }) {
   const bind = f.bind_address ? (PUBLIC_ADDR.has(f.bind_address) ? `${f.bind_address} · todas las interfaces` : f.bind_address) : null;

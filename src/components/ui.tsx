@@ -118,3 +118,24 @@ export function NetworkErrorCard({ onRetry }: { onRetry: () => void }) {
     </section>
   );
 }
+
+export function Aviso({ tone, children }: { tone: "highlight" | "info"; children: ReactNode }) {
+  return (
+    <div className={`aviso aviso--${tone}`} role="note">
+      <Info size={18} color="#285fdb" aria-hidden />
+      <p>{children}</p>
+    </div>
+  );
+}
+
+export function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+  return (
+    <label className="switch">
+      <button type="button" role="switch" aria-checked={checked} className={`switch__track${checked ? " switch__track--on" : ""}`} onClick={() => onChange(!checked)}>
+        <span className="switch__knob" />
+      </button>
+      <span className="switch__label">{label}</span>
+    </label>
+  );
+}
+

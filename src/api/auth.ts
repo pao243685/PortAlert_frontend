@@ -103,3 +103,52 @@ export const listAlerts = () => request<AlertItem[]>("/alerts", { auth: true });
 export const getAlert = (id: number | string) => request<AlertDetail>(`/alerts/${id}`, { auth: true });
 export const updateAlert = (id: number, status: AlertStatus, markNormal = false) =>
   request<AlertItem>(`/alerts/${id}`, { method: "PATCH", json: { status, mark_normal: markNormal }, auth: true });
+
+export type PanelData = {
+  host: Host;
+  review_completed: boolean;
+  latest: { received_at: string; score: number | null; seconds_ago: number } | null;
+  first_score: number | null;
+  agent_status: "conectado" | "sin_conexion" | null;
+  new_alerts: Record<Severity, number>;
+  new_total: number;
+  recent_alerts: AlertItem[];
+};
+export type ScoreHistory = {
+  days: number;
+  points: { date: string; score: number; first_review: boolean }[];
+  first_score: number | null;
+  current_score: number | null;
+};
+export const getPanel = () => request<PanelData>("/panel", { auth: true });
+export const getScoreHistory = (days: 7 | 30) => request<ScoreHistory>(`/panel/score-history?days=${days}`, { auth: true });
+
+export type PortRow = {
+  port: number;
+  protocol: string;
+  bind_address: string;
+  scope: "all" | "local" | "specific";
+  service: string | null;
+  process: string | null;
+  pid: number | null;
+  exe_path: string | null;
+  username: string | null;
+  package: string | null;
+  exe_deleted: boolean;
+  severity: Severity | null;
+  confidence: "alta" | "media" | "baja" | null;
+  finding_title: string | null;
+  recommendation: string | null;
+  is_normal: boolean;
+};
+export type PortsData = {
+  host: Host;
+  report_id: number | null;
+  received_at: string | null;
+  ports: PortRow[];
+  total: number;
+  with_risk: number;
+  normal: number;
+  improvements: { port: number; protocol: string; service: string | null; bind_address: string }[];
+};
+export const getPorts = () => request<PortsData>("/ports", { auth: true });

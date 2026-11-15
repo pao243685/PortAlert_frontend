@@ -26,7 +26,8 @@ cualquier ruta a `index.html`.
 | `/revision` | Primera revisión de tu equipo (+ cargando, sin hallazgos, error de red) | sección "03 · Primera revisión": `34:15365`, `34:15599`, `34:15720`, `34:15833` |
 | `/alertas` | Alertas: filtros Todas/Nuevas/Atendidas/Ignoradas y bandeja vacía (la lista con alertas **no está en el Figma**: provisional) | sección "05 · Alertas y atención": `6:24849` |
 | `/alertas/:id` | Detalle de alerta + diálogo de ignorar | `6:24069`, `34:17020` (Windows), `34:16556` (diálogo) |
-| `/panel` | Placeholder (sin diseño todavía) dentro del layout con barra lateral | — |
+| `/panel` | Panel: puntaje, conexión del agente, alertas nuevas, historial 7/30 días y últimas alertas (+ sin conexión, sin reportes, cargando, error) | sección "04 · Panel y estados": `6:23410`, `10:10722`, `6:24751`, `6:24949`, `6:25074` |
+| `/puertos` | Puertos del equipo con detalle lateral y marca "es normal" (+ sin reportes, cargando, error de red) | sección "06 · Puertos del equipo": `34:16049`, `34:16235`, `34:16313`, `34:16473` |
 
 Donde el Figma tiene dos versiones (hay un login con otro estilo, `6:23175`), se usó la más nueva: símbolo de escudo,
 kicker en IBM Plex Mono, sin tarjeta. Los íconos son `lucide-react` con los mismos nombres del Figma
@@ -35,7 +36,7 @@ kicker en IBM Plex Mono, sin tarjeta. Los íconos son `lucide-react` con los mis
 ## Contrato con la API
 `POST /auth/register` · `POST /auth/login` (form) → `access_token` o `mfa_required` + `mfa_token` · `POST /auth/login/totp` ·
 `GET /auth/me` · `POST /auth/totp/setup` · `POST /auth/totp/enable` · `GET /hosts` · `POST /hosts/enroll-token` ·
-`GET /alerts` · `GET /alerts/{id}` · `PATCH /alerts/{id}` (`status`, `mark_normal`) · `GET /review` · `PUT /review/normal` · `POST /review/complete` · `GET /installers/instalar-{token}.sh|.ps1` (descarga del instalador; el backend responde con `Content-Disposition: attachment`).
+`GET /panel` · `GET /panel/score-history?days=7|30` · `GET /ports` · `GET /alerts` · `GET /alerts/{id}` · `PATCH /alerts/{id}` (`status`, `mark_normal`) · `GET /review` · `PUT /review/normal` · `POST /review/complete` · `GET /installers/instalar-{token}.sh|.ps1` (descarga del instalador; el backend responde con `Content-Disposition: attachment`).
 
 ## Notas
 - El token de sesión se guarda en `sessionStorage`. El `mfa_token` solo viaja en memoria (state del router).
@@ -49,3 +50,6 @@ kicker en IBM Plex Mono, sin tarjeta. Los íconos son `lucide-react` con los mis
 - El texto del rango "Crítico" del puntaje no viene en el Figma; el de ese rango es de redacción propia.
 - Alertas: la severidad usa siempre el estilo sólido del Resumen inicial (`SeverityBadge`), aunque el frame de detalle del Figma traiga la etiqueta suave.
 - Sin diseño en Figma: lista con alertas, chips de estado Atendida/Ignorada y el botón "Reabrir alerta" (provisionales). Las frases de "Nivel de confianza" son de redacción propia.
+- Panel: el estado "Conectado" significa último reporte de hace menos de 5 min (igual que en el Figma); el panel se refresca solo cada 30 s. El historial agrupa por día UTC (un punto por día: el último reporte).
+- Panel y Puertos: los botones "Mi equipo" / "Ver mi equipo" abren por ahora el estado de la vinculación (`/vincular`), porque la vista Mi equipo todavía no existe. En "Alertas nuevas" las tarjetas siguen el orden del Figma (Baja → Crítica) con el estilo de color del Resumen inicial.
+- Sin diseño en Figma: el texto de "Cargando el panel…" y la fila de Puertos que no está en el Figma (puerto sin proceso) son provisionales. En Puertos se selecciona por defecto el primer puerto con riesgo; en el Figma el ejemplo es SSH.
