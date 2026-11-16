@@ -15,7 +15,10 @@ import { AppShell } from "../components/AppShell";
 import { Button, NetworkErrorCard } from "../components/ui";
 import { agoLabel, fmtDate, OS_LABEL } from "../lib/format";
 
-const UNINSTALL_COMMAND = "sudo portalert-agent uninstall";
+const LINUX_UNINSTALL =
+  "sudo systemctl disable --now portalert-agent && sudo rm -f /etc/systemd/system/portalert-agent.service /usr/local/bin/portalert-agent && sudo rm -rf /etc/portalert && sudo systemctl daemon-reload";
+const WINDOWS_UNINSTALL =
+  "Unregister-ScheduledTask -TaskName PortAlertAgent -Confirm:$false; Stop-Process -Name portalert-agent -Force -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force \"$env:ProgramFiles\\PortAlert\",\"$env:ProgramData\\PortAlert\"; [Environment]::SetEnvironmentVariable('PORTALERT_CONFIG',$null,'Machine')";
 
 function errorText(err: unknown): string {
   return err instanceof ApiError && err.status !== 0
@@ -233,11 +236,11 @@ function TelegramCard() {
   );
 }
 
-function CommandLine() {
-  const { copied, copy } = useCopy(UNINSTALL_COMMAND);
+function CommandLine({ text }: { text: string }) {
+  const { copied, copy } = useCopy(text);
   return (
     <div className="cmdline">
-      <code>{UNINSTALL_COMMAND}</code>
+      <code>{text}</code>
       <Button inline variant="secondary" icon={<Copy size={16} aria-hidden />} onClick={copy}>{copied ? "Copiado" : "Copiar"}</Button>
     </div>
   );
@@ -254,12 +257,13 @@ function ManageCard({ onUnlink }: { onUnlink: () => void }) {
         <p className="uninstall__title">Cómo desinstalar el agente</p>
         <div className="uninstall__os">
           <p className="uninstall__head"><Monitor size={14} aria-hidden />Windows</p>
-          <p className="wcard__text wcard__text--small">Configuración › Aplicaciones, busca «PortAlert Agent» y selecciona Desinstalar.</p>
+          <p className="wcard__text wcard__text--small">Abre PowerShell como administrador y ejecuta:</p>
+          <CommandLine text={WINDOWS_UNINSTALL} />
         </div>
         <div className="uninstall__os">
           <p className="uninstall__head"><Terminal size={14} aria-hidden />Linux</p>
           <p className="wcard__text wcard__text--small">Ejecuta el siguiente comando en la terminal:</p>
-          <CommandLine />
+          <CommandLine text={LINUX_UNINSTALL} />
         </div>
       </div>
       <div className="actions">
@@ -269,11 +273,21 @@ function ManageCard({ onUnlink }: { onUnlink: () => void }) {
   );
 }
 
+function CopyBox({ title, text }: { title: string; text: string }) {
+  const { copied, copy } = useCopy(text);
+  return (
+    <div className="confirm__box">
+      <p className="confirm__box-title">{title}</p>
+      <p className="confirm__box-text confirm__box-text--mono">{text}</p>
+      <button type="button" className="confirm__copy" onClick={copy}><Copy size={14} aria-hidden />{copied ? "Copiado" : "Copiar"}</button>
+    </div>
+  );
+}
+
 function UnlinkDialog({
   hostName, busy, error, onCancel, onConfirm,
 }: { hostName: string; busy: boolean; error: string | null; onCancel: () => void; onConfirm: () => void }) {
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const { copied, copy } = useCopy(UNINSTALL_COMMAND);
 
   useEffect(() => {
     cancelRef.current?.focus();
@@ -295,19 +309,12 @@ function UnlinkDialog({
         </div>
         <div className="confirm__note" role="note">
           <Info size={18} color="#285fdb" aria-hidden />
-          <p>Para volver a usar PortAlert con este equipo, tendrás que vincularlo de nuevo mediante el instalador. El agente instalado debe desinstalarse aparte.</p>
+          <p>Para volver a usar PortAlert con este equipo, tendrás que vincularlo de nuevo con el instalador. El agente instalado se quita aparte con los comandos de abajo.</p>
         </div>
         <div className="confirm__steps">
           <p className="confirm__steps-title">Después de desvincular</p>
-          <div className="confirm__box">
-            <p className="confirm__box-title">Windows</p>
-            <p className="confirm__box-text">1. Abre <strong>Configuración</strong> &gt; <strong>Aplicaciones</strong> y desinstala el agente.</p>
-          </div>
-          <div className="confirm__box">
-            <p className="confirm__box-title">Linux</p>
-            <p className="confirm__box-text confirm__box-text--mono">{UNINSTALL_COMMAND}</p>
-            <button type="button" className="confirm__copy" onClick={copy}><Copy size={14} aria-hidden />{copied ? "Copiado" : "Copiar"}</button>
-          </div>
+          <CopyBox title="Windows (PowerShell como administrador)" text={WINDOWS_UNINSTALL} />
+          <CopyBox title="Linux (terminal)" text={LINUX_UNINSTALL} />
         </div>
         {error && <p className="tgfeedback tgfeedback--error" role="alert">{error}</p>}
         <div className="confirm__actions">
