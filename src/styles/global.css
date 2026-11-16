@@ -472,3 +472,69 @@ a.table__row:hover { background: #fafbfd; }
   .ports-layout { flex-direction: column; }
   .side { width: 100%; }
 }
+
+/* ======================= Mi equipo y Telegram (Figma "07 · Mi equipo y Telegram") ======================= */
+.team { display: flex; flex-direction: column; gap: 28px; padding: 32px; background: #fff; border: 1px solid var(--border); border-radius: 12px; }
+.team__id { display: flex; align-items: center; gap: 16px; }
+.team__icon { width: 56px; height: 56px; flex-shrink: 0; border-radius: 12px; background: var(--info-bg); color: var(--primary); display: flex; align-items: center; justify-content: center; }
+.team__who { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.team__name { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; font-size: 24px; font-weight: 600; line-height: 1.6; }
+.team__meta { font-size: 12px; line-height: 1.6; color: var(--text-muted); }
+.team__sep { width: 100%; height: 1px; margin: 0; border: 0; background: var(--border); }
+.team__info { display: flex; gap: 40px; }
+.team__datum { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; line-height: 1.6; }
+.team__label { font-size: 12px; color: var(--text-muted); }
+.team__value { font-size: 18px; font-weight: 600; }
+.team__detail { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.badge { display: inline-flex; padding: 4px 10px; border-radius: 20px; background: #ecfdf5; color: #065f46; font-size: 12px; font-weight: 600; line-height: 1.6; white-space: nowrap; }
+.badge--down { background: #fcf4dc; color: #7a5300; }
+.badge--idle { background: #e5eaf1; color: var(--text-muted); }
+
+.wcard__head { display: flex; flex-direction: column; gap: 10px; }
+.wcard__head .wcard__text { line-height: 1.6; }
+.tgstate { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
+.tgstate--ok { background: #eaf5f3; }
+.tgstate__row { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--text-muted); }
+.tgstate__row svg { flex-shrink: 0; }
+.tgstate--ok .tgstate__row { color: #246b67; }
+.tgstate--error .tgstate__row { color: var(--error-text); }
+.tgstate__spin { color: var(--primary); }
+.tgstate__text { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+.tgfeedback { font-size: 13px; line-height: 1.6; color: #246b67; }
+.tgfeedback--error { color: var(--error-text); }
+.actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+
+.manage { display: flex; flex-direction: column; gap: 20px; padding: 28px; border: 1px solid var(--border); border-radius: 12px; }
+.uninstall { display: flex; flex-direction: column; gap: 12px; }
+.uninstall__title { font-size: 13px; font-weight: 600; line-height: 1.6; }
+.uninstall__os { display: flex; flex-direction: column; gap: 4px; }
+.uninstall__head { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; line-height: 1.6; color: var(--text-muted); }
+.cmdline { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; }
+.cmdline code { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; word-break: break-all; }
+
+.btn--danger { background: var(--error); color: #fff; }
+.btn--danger:hover:not(:disabled) { background: #9a2439; }
+.btn--danger.btn--loading:disabled { background: var(--error); }
+
+.confirm { width: 540px; max-width: 100%; max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; padding: 32px; background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(7, 19, 35, 0.15); }
+.confirm__symbol { width: 48px; height: 48px; border-radius: 12px; background: var(--error-bg); display: flex; align-items: center; justify-content: center; }
+.confirm__head { display: flex; flex-direction: column; gap: 12px; }
+.confirm__title { margin: 0; font-size: 28px; font-weight: 400; line-height: 1.25; }
+.confirm__name { font-size: 15px; font-weight: 600; }
+.confirm__text { font-size: 14px; line-height: 1.8; color: var(--text-muted); }
+.confirm__note { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--info-bg); border-radius: 8px; font-size: 13px; line-height: 1.6; }
+.confirm__note svg { flex-shrink: 0; margin-top: 2px; }
+.confirm__steps { display: flex; flex-direction: column; gap: 12px; }
+.confirm__steps-title { font-size: 13px; font-weight: 600; }
+.confirm__box { display: flex; flex-direction: column; gap: 8px; padding: 14px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
+.confirm__box-title { font-weight: 600; }
+.confirm__box-text { line-height: 1.6; color: var(--text-muted); }
+.confirm__box-text strong { color: var(--text); font-weight: 600; }
+.confirm__box-text--mono { font-family: var(--font-mono); font-size: 12px; }
+.confirm__copy { align-self: flex-start; display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #fff; border: 1px solid var(--border); border-radius: 8px; color: var(--primary); font-size: 12px; font-weight: 600; cursor: pointer; }
+.confirm__actions { display: flex; justify-content: flex-end; gap: 12px; }
+
+@media (max-width: 960px) {
+  .team__info { flex-direction: column; gap: 20px; }
+  .team__id { align-items: flex-start; }
+}

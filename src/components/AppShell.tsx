@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
-// Alertas y Mi equipo aún no existen en el producto: se muestran deshabilitados.
 export function AppShell({
   children, breadcrumb, activePanel = false,
 }: { children: ReactNode; breadcrumb: string; activePanel?: boolean }) {
@@ -25,9 +24,9 @@ export function AppShell({
           <NavLink to="/puertos" className={({ isActive }) => `sidebar__link${isActive ? " sidebar__link--active" : ""}`}>
             <Network size={20} aria-hidden /><span>Puertos</span>
           </NavLink>
-          <span className="sidebar__link sidebar__link--disabled" aria-disabled="true" title="Próximamente">
+          <NavLink to="/mi-equipo" className={({ isActive }) => `sidebar__link${isActive ? " sidebar__link--active" : ""}`}>
             <Monitor size={20} aria-hidden /><span>Mi equipo</span>
-          </span>
+          </NavLink>
         </div>
         <div className="sidebar__account">
           <p className="sidebar__email">{user?.email}</p>

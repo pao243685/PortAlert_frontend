@@ -3,6 +3,7 @@ import { RequireAuth } from "./auth/AuthContext";
 import AlertaDetalle from "./pages/AlertaDetalle";
 import Alertas from "./pages/Alertas";
 import Login from "./pages/Login";
+import MiEquipo from "./pages/MiEquipo";
 import Panel from "./pages/Panel";
 import Puertos from "./pages/Puertos";
 import Register from "./pages/Register";
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/alertas" element={<RequireAuth><Alertas /></RequireAuth>} />
       <Route path="/alertas/:id" element={<RequireAuth><AlertaDetalle /></RequireAuth>} />
       <Route path="/puertos" element={<RequireAuth><Puertos /></RequireAuth>} />
+      <Route path="/mi-equipo" element={<RequireAuth><MiEquipo /></RequireAuth>} />
       <Route path="/panel" element={<RequireAuth><Panel /></RequireAuth>} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

@@ -36,6 +36,8 @@ export const listHosts = () => request<Host[]>("/hosts", { auth: true });
 export const createEnrollToken = () =>
   request<EnrollToken>("/hosts/enroll-token", { method: "POST", auth: true });
 
+export const deleteHost = (id: number) => request<void>(`/hosts/${id}`, { method: "DELETE", auth: true });
+
 export type InstallerOS = "linux" | "windows";
 export const installerUrl = (token: string, os: InstallerOS, base: string) =>
   `${base}/installers/instalar-${token}.${os === "linux" ? "sh" : "ps1"}`;
