@@ -227,7 +227,7 @@ export default function Vincular() {
           <p className="os-title"><Monitor size={20} color="#285fdb" aria-hidden />{OS_LABEL[os]}</p>
           {changeOs}
           {choosingOs && osPicker}
-          <p className="wcard__text wcard__text--ink">{os === "linux" ? "Pega este comando en una terminal:" : "Pega este comando en PowerShell, abierto como administrador:"}</p>
+          <p className="wcard__text wcard__text--ink">{os === "linux" ? "Pega este comando en una terminal:" : "Pega este comando en PowerShell. Windows te pedirá permiso de administrador y abrirá la ventana por ti:"}</p>
           <div className="cmd">
             <p className="cmd__text">{command}</p>
             <Button variant="secondary" className="btn--blue" icon={<Copy size={16} aria-hidden />} onClick={copy}>{copied ? "Copiado" : "Copiar"}</Button>
