@@ -538,3 +538,11 @@ a.table__row:hover { background: #fafbfd; }
   .team__info { flex-direction: column; gap: 20px; }
   .team__id { align-items: flex-start; }
 }
+
+/* ======================= Requisitos de contraseña ======================= */
+.pw-rules { list-style: none; margin: -8px 0 0; padding: 12px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
+.pw-rule { display: flex; align-items: center; gap: 7px; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+.pw-rule--ok { color: #246b67; }
+.pw-rule--bad { color: var(--text); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 520px) { .pw-rules { grid-template-columns: 1fr; } }

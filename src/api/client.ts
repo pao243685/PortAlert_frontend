@@ -10,7 +10,7 @@ export const tokenStore = {
 };
 
 export class ApiError extends Error {
-  constructor(public status: number, public detail: string) {
+  constructor(public status: number, public detail: string, public retryAfter?: number) {
     super(detail);
   }
 }
@@ -23,7 +23,8 @@ export function setSessionExpiredHandler(fn: (() => void) | null) {
 function detailOf(body: unknown, fallback: string): string {
   const d = (body as { detail?: unknown } | null)?.detail;
   if (typeof d === "string") return d;
-  if (Array.isArray(d) && d[0]?.msg) return String(d[0].msg);
+  // pydantic antepone "Value error, " a los mensajes de nuestras validaciones
+  if (Array.isArray(d) && d[0]?.msg) return String(d[0].msg).replace(/^Value error, /, "");
   return fallback;
 }
 
@@ -51,7 +52,8 @@ export async function request<T>(path: string, opts: Options = {}): Promise<T> {
   const data = await res.json().catch(() => null);
   if (!res.ok) {
     if (res.status === 401 && opts.auth && token) onSessionExpired?.();
-    throw new ApiError(res.status, detailOf(data, "Algo salió mal. Inténtalo de nuevo."));
+    const retry = Number(res.headers.get("Retry-After"));  // el backend lo expone por CORS
+    throw new ApiError(res.status, detailOf(data, "Algo salió mal. Inténtalo de nuevo."), res.status === 429 && retry > 0 ? retry : undefined);
   }
   return data as T;
 }

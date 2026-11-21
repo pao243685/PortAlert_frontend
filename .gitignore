@@ -1,6 +1,5 @@
 *.log
 *.tsbuildinfo
--e 
 .env
 .env.local
 dist/

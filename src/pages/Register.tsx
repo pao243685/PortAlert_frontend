@@ -6,7 +6,10 @@ import { login, register } from "../api/auth";
 import { ApiError } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { AuthShell } from "../components/AuthShell";
+import { PasswordRules } from "../components/PasswordRules";
 import { Button, Field, Notice } from "../components/ui";
+import { checkPassword } from "../lib/password";
+import { fmtWait, useCooldown } from "../lib/useCooldown";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -17,15 +20,16 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(false);
+  const cooldown = useCooldown();
   const { signIn } = useAuth();
   const navigate = useNavigate();
 
   function validate(): Errors {
     const e: Errors = {};
     if (!EMAIL_RE.test(email.trim())) e.email = "Introduce un correo válido, por ejemplo: lucia@ejemplo.es.";
-    if (password.length === 0) e.password = "Escribe una contraseña de mínimo 8 caracteres.";
-    else if (password.length < 8) e.password = `La contraseña tiene ${password.length} caracteres. Usa mínimo 8.`;
-    else if (password.length > 72) e.password = "La contraseña admite máximo 72 caracteres.";
+    const faltan = checkPassword(password).filter((r) => !r.ok);
+    if (password.length === 0) e.password = "Escribe una contraseña que cumpla los requisitos de abajo.";
+    else if (faltan.length) e.password = "La contraseña aún no cumple: " + faltan.map((r) => r.label.toLowerCase()).join("; ") + ".";
     return e;
   }
 
@@ -45,7 +49,13 @@ export default function Register() {
       await signIn(res.access_token!);
       navigate("/2fa/configurar", { replace: true }); // paso 2: verificación en dos pasos
     } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
+      if (err instanceof ApiError && err.status === 429) {
+        cooldown.start(err.retryAfter ?? 60);
+        setErrors({ form: "Demasiados intentos. Espera a que termine la cuenta regresiva e inténtalo de nuevo." });
+      } else if (err instanceof ApiError && err.status === 422) {
+        // el servidor también rechaza contraseñas muy comunes o que contienen tu correo
+        setErrors({ form: "Revisa los campos indicados para continuar.", password: err.detail });
+      } else if (err instanceof ApiError && err.status === 409) {
         setErrors({ form: "Revisa los campos indicados para continuar.", email: "Este correo ya está registrado. Inicia sesión." });
       } else {
         setErrors({ form: err instanceof ApiError ? err.detail : "Algo salió mal. Inténtalo de nuevo." });
@@ -74,11 +84,14 @@ export default function Register() {
           <Field
             label="Contraseña" type="password" autoComplete="new-password"
             value={password} onChange={(e) => setPassword(e.target.value)}
-            hint="Mínimo 8 caracteres" error={errors.password}
+            error={errors.password}
           />
+          <PasswordRules password={password} touched={password.length > 0} />
         </div>
 
-        <Button type="submit" loading={loading} icon={<ArrowRight size={18} aria-hidden />}>Crear cuenta</Button>
+        <Button type="submit" loading={loading} disabled={cooldown.left > 0} icon={<ArrowRight size={18} aria-hidden />}>
+          {cooldown.left > 0 ? `Espera ${fmtWait(cooldown.left)}` : "Crear cuenta"}
+        </Button>
 
         <p className="form__alt">
           <span>¿Ya tienes una cuenta?</span>

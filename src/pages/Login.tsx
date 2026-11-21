@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { login } from "../api/auth";
 import { ApiError } from "../api/client";
+import { fmtWait, useCooldown } from "../lib/useCooldown";
 import { useAuth } from "../auth/AuthContext";
 import { AuthShell } from "../components/AuthShell";
 import { Button, Field, Notice } from "../components/ui";
@@ -14,7 +15,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [blocked, setBlocked] = useState(false);
+  const cooldown = useCooldown();
+  const blocked = cooldown.left > 0;
   const [loading, setLoading] = useState(false);
   const { signIn, destinoTrasLogin } = useAuth();
   const navigate = useNavigate();
@@ -38,8 +40,8 @@ export default function Login() {
       navigate(await destinoTrasLogin(user), { replace: true });
     } catch (err) {
       if (err instanceof ApiError && err.status === 429) {
-        setBlocked(true);
-        setError("Demasiados intentos. Espera unos minutos e inténtalo de nuevo.");
+        cooldown.start(err.retryAfter ?? 60);
+        setError("Demasiados intentos. Espera a que termine la cuenta regresiva e inténtalo de nuevo.");
       } else if (err instanceof ApiError && err.status === 401) {
         setError("Correo o contraseña incorrectos.");
       } else {
@@ -78,7 +80,7 @@ export default function Login() {
         </div>
 
         <Button type="submit" loading={loading} disabled={blocked} icon={<ArrowRight size={18} aria-hidden />}>
-          {blocked ? "Espera unos minutos" : "Iniciar sesión"}
+          {blocked ? `Espera ${fmtWait(cooldown.left)}` : "Iniciar sesión"}
         </Button>
 
         <p className="form__note form__note--center">

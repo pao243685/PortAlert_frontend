@@ -3,6 +3,7 @@ import type { FormEvent } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { loginTotp } from "../api/auth";
 import { ApiError } from "../api/client";
+import { fmtWait, useCooldown } from "../lib/useCooldown";
 import { useAuth } from "../auth/AuthContext";
 import { AuthShell } from "../components/AuthShell";
 import { Button, Field, Notice } from "../components/ui";
@@ -12,7 +13,8 @@ export default function TotpVerify() {
   const mfaToken = (location.state as { mfaToken?: string } | null)?.mfaToken;
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [blocked, setBlocked] = useState(false);
+  const cooldown = useCooldown();
+  const blocked = cooldown.left > 0;
   const [loading, setLoading] = useState(false);
   const { signIn, destinoTrasLogin } = useAuth();
   const navigate = useNavigate();
@@ -33,8 +35,8 @@ export default function TotpVerify() {
       navigate(await destinoTrasLogin(user), { replace: true });
     } catch (err) {
       if (err instanceof ApiError && err.status === 429) {
-        setBlocked(true);
-        setError("Demasiados intentos. Espera unos minutos e inténtalo de nuevo.");
+        cooldown.start(err.retryAfter ?? 60);
+        setError("Demasiados intentos. Espera a que termine la cuenta regresiva e inténtalo de nuevo.");
       } else if (err instanceof ApiError && err.status === 401) {
         // el backend rechaza igual un código mal escrito, uno ya usado (anti-replay) y un mfa_token vencido (5 min)
         setError("El código no es válido o ya se usó. Espera al siguiente código; si pasaron más de 5 minutos, vuelve a iniciar sesión.");
@@ -65,7 +67,7 @@ export default function TotpVerify() {
         {error && <Notice variant="error">{error}</Notice>}
 
         <Button type="submit" loading={loading} disabled={blocked}>
-          {loading ? "Verificando" : blocked ? "Espera unos minutos" : "Verificar"}
+          {loading ? "Verificando" : blocked ? `Espera ${fmtWait(cooldown.left)}` : "Verificar"}
         </Button>
         <Button type="button" variant="secondary" onClick={() => navigate("/login", { replace: true })}>Volver</Button>
       </form>
