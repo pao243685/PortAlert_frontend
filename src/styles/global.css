@@ -486,7 +486,7 @@ a.table__row:hover { background: #fafbfd; }
 .team__label { font-size: 12px; color: var(--text-muted); }
 .team__value { font-size: 18px; font-weight: 600; }
 .team__detail { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
-.badge { display: inline-flex; padding: 4px 10px; border-radius: 20px; background: #ecfdf5; color: #065f46; font-size: 12px; font-weight: 600; line-height: 1.6; white-space: nowrap; }
+.badge { display: inline-flex; gap: 6px; padding: 4px 10px; border-radius: 20px; background: #ecfdf5; color: #065f46; font-size: 12px; font-weight: 600; line-height: 1.6; white-space: nowrap; }
 .badge--down { background: #fcf4dc; color: #7a5300; }
 .badge--idle { background: #e5eaf1; color: var(--text-muted); }
 
@@ -494,6 +494,8 @@ a.table__row:hover { background: #fafbfd; }
 .wcard__head .wcard__text { line-height: 1.6; }
 .tgstate { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
 .tgstate--ok { background: #eaf5f3; }
+.tgstate--warn { background: #fcf4dc; }
+.tgstate--warn .tgstate__row { color: #7a5300; }
 .tgstate__row { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--text-muted); }
 .tgstate__row svg { flex-shrink: 0; }
 .tgstate--ok .tgstate__row { color: #246b67; }

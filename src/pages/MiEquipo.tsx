@@ -20,10 +20,32 @@ const LINUX_UNINSTALL =
 const WINDOWS_UNINSTALL =
   "Unregister-ScheduledTask -TaskName PortAlertAgent -Confirm:$false; Stop-Process -Name portalert-agent -Force -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force \"$env:ProgramFiles\\PortAlert\",\"$env:ProgramData\\PortAlert\"; [Environment]::SetEnvironmentVariable('PORTALERT_CONFIG',$null,'Machine')";
 
+const REACTIVAR = {
+  windows: {
+    pasos: "Abre PowerShell como administrador y ejecuta:",
+    comando:
+      "$s = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Seconds 0) -RestartCount 5 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries; Set-ScheduledTask -TaskName PortAlertAgent -Settings $s | Out-Null; Start-ScheduledTask -TaskName PortAlertAgent",
+  },
+  linux: {
+    pasos: "En la terminal ejecuta:",
+    comando: "sudo systemctl restart portalert-agent",
+  },
+} as const;
+
 function errorText(err: unknown): string {
   return err instanceof ApiError && err.status !== 0
     ? err.detail
     : "No pudimos conectar con el servidor. Revisa tu conexión.";
+}
+
+function manualStart(url: string): { bot: string; command: string } | null {
+  try {
+    const u = new URL(url);
+    const token = u.searchParams.get("start");
+    return token ? { bot: u.pathname.slice(1), command: `/start ${token}` } : null;
+  } catch {
+    return null;
+  }
 }
 
 function useCopy(text: string) {
@@ -79,6 +101,38 @@ function TeamCard({ data }: { data: PanelData }) {
           <p className="team__value">30–60 segundos</p>
           <p className="team__detail">Entre cada envío de reportes</p>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function ReconnectCard({ data, checking, onCheck }: { data: PanelData; checking: boolean; onCheck: () => void }) {
+  const guia = REACTIVAR[data.host.os_family as keyof typeof REACTIVAR];
+  return (
+    <section className="wcard" aria-labelledby="reconnect-title">
+      <div className="wcard__head">
+        <h2 className="wcard__subtitle wcard__subtitle--lg" id="reconnect-title">El agente no está reportando</h2>
+        <p className="wcard__text">
+          {data.latest ? `El último reporte llegó ${agoLabel(data.latest.seconds_ago)}. ` : ""}
+          Puede ser que el equipo esté apagado o suspendido, sin internet, o que el agente se haya detenido. PortAlert no puede saber cuál fue.
+        </p>
+      </div>
+      <div className="tgstate tgstate--warn">
+        <p className="tgstate__row"><Info size={20} aria-hidden />Cómo reactivarlo</p>
+        <p className="tgstate__text">1. Confirma que el equipo esté encendido y con internet.</p>
+        {guia ? (
+          <>
+            <p className="tgstate__text">2. {guia.pasos}</p>
+            <CommandLine text={guia.comando} />
+          </>
+        ) : (
+          <p className="tgstate__text">2. Reinicia el servicio del agente desde tu sistema.</p>
+        )}
+        <p className="tgstate__text">3. Espera uno o dos minutos. Esta página se actualiza sola y pasará a Conectado.</p>
+        <p className="tgstate__text">Si sigue sin conectarse, desvincula el equipo más abajo e instala el agente de nuevo.</p>
+      </div>
+      <div className="actions">
+        <Button inline variant="secondary" loading={checking} onClick={onCheck}>Comprobar ahora</Button>
       </div>
     </section>
   );
@@ -152,6 +206,7 @@ function TelegramCard() {
     }
   }
 
+  const manual = url ? manualStart(url) : null;
   let box;
   let actions;
 
@@ -186,6 +241,12 @@ function TelegramCard() {
       <div className="tgstate">
         <p className="tgstate__row"><Loader2 size={20} className="spin tgstate__spin" aria-hidden />Esperando conexión con Telegram</p>
         <p className="tgstate__text">Abre el enlace, pulsa Iniciar en el chat con el bot y vuelve aquí. El enlace vence en 10 minutos.</p>
+        {manual && (
+          <>
+            <p className="tgstate__text">¿Telegram Web no avanza al abrir el enlace? Abre el chat con @{manual.bot} y envía este mensaje tal cual:</p>
+            <CommandLine text={manual.command} />
+          </>
+        )}
       </div>
     );
     actions = (
@@ -333,6 +394,7 @@ export default function MiEquipo() {
   const [dialog, setDialog] = useState(false);
   const [unlinking, setUnlinking] = useState(false);
   const [unlinkError, setUnlinkError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
 
   const load = useCallback(async () => {
     setFailed(false);
@@ -348,6 +410,19 @@ export default function MiEquipo() {
   }, [navigate]);
 
   useEffect(() => { void load(); }, [load]);
+
+  const down = data?.agent_status === "sin_conexion";
+  useEffect(() => {
+    if (!down) return;
+    const id = setInterval(() => void load(), 15000);
+    return () => clearInterval(id);
+  }, [down, load]);
+
+  async function check() {
+    setChecking(true);
+    await load();
+    setChecking(false);
+  }
 
   const closeDialog = useCallback(() => {
     setDialog(false);
@@ -385,6 +460,7 @@ export default function MiEquipo() {
       ) : (
         <>
           <TeamCard data={data} />
+          {down && <ReconnectCard data={data} checking={checking} onCheck={check} />}
           <TelegramCard />
           <ManageCard onUnlink={() => setDialog(true)} />
           <p className="form__note">PortAlert está pensado exclusivamente para tu propio equipo.</p>
