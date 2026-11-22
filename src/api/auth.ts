@@ -40,7 +40,7 @@ export const deleteHost = (id: number) => request<void>(`/hosts/${id}`, { method
 
 export type InstallerOS = "linux" | "windows";
 export const installerUrl = (token: string, os: InstallerOS, base: string) =>
-  `${base}/installers/instalar-${token}.${os === "linux" ? "sh" : "cmd"}`;
+  `${base}/installers/instalar-${token}.${os === "linux" ? "sh" : "ps1"}`;
 
 export type Severity = "critica" | "alta" | "media" | "baja";
 export type Finding = {
