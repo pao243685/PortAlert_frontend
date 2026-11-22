@@ -97,6 +97,7 @@ export type AlertDetail = AlertItem & {
   username: string | null;
   package: string | null;
   confidence_note: string;
+  reputation: string | null;
   recommendation: string;
   can_mark_normal: boolean;
 };

@@ -137,6 +137,7 @@ export default function AlertaDetalle() {
           <Row label="Ejecutable" mono>{alert.exe_path ?? "No disponible"}</Row>
           <Row label="Usuario" mono>{alert.username ?? "Desconocido"}</Row>
           <Row label="Paquete">{alert.package ?? "Sin paquete asociado"}</Row>
+          <Row label="Reputación (VirusTotal)">{alert.reputation ?? "Sin consultar"}</Row>
           <Row label="Nivel de confianza">{alert.confidence_note}</Row>
           {alert.recommendation && <Row label="Recomendación">{alert.recommendation}</Row>}
           <div className="alert-notice">
