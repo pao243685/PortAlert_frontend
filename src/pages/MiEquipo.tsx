@@ -18,7 +18,7 @@ import { agoLabel, fmtDate, OS_LABEL } from "../lib/format";
 const LINUX_UNINSTALL =
   "sudo systemctl disable --now portalert-agent && sudo rm -f /etc/systemd/system/portalert-agent.service /usr/local/bin/portalert-agent && sudo rm -rf /etc/portalert && sudo systemctl daemon-reload";
 const WINDOWS_UNINSTALL =
-  "Unregister-ScheduledTask -TaskName PortAlertAgent -Confirm:$false; Stop-Process -Name portalert-agent -Force -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force \"$env:ProgramFiles\\PortAlert\",\"$env:ProgramData\\PortAlert\"; [Environment]::SetEnvironmentVariable('PORTALERT_CONFIG',$null,'Machine')";
+  "Unregister-ScheduledTask -TaskName PortAlertAgent -Confirm:$false -ErrorAction SilentlyContinue; for ($i=0; $i -lt 5; $i++) { Stop-Process -Name portalert-agent -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; Remove-Item -Recurse -Force \"$env:ProgramFiles\\PortAlert\",\"$env:ProgramData\\PortAlert\" -ErrorAction SilentlyContinue; if (-not (Test-Path \"$env:ProgramFiles\\PortAlert\")) { break } }; [Environment]::SetEnvironmentVariable('PORTALERT_CONFIG',$null,'Machine'); if (Test-Path \"$env:ProgramFiles\\PortAlert\") { Write-Host 'No se pudo borrar todo. Reinicia el equipo y vuelve a ejecutar este comando.' -ForegroundColor Yellow } else { Write-Host 'PortAlert se quitó por completo de este equipo.' -ForegroundColor Green }";
 
 const REACTIVAR = {
   windows: {
@@ -318,7 +318,7 @@ function ManageCard({ onUnlink }: { onUnlink: () => void }) {
         <p className="uninstall__title">Cómo desinstalar el agente</p>
         <div className="uninstall__os">
           <p className="uninstall__head"><Monitor size={14} aria-hidden />Windows</p>
-          <p className="wcard__text wcard__text--small">Abre PowerShell como administrador y ejecuta:</p>
+          <p className="wcard__text wcard__text--small">Abre PowerShell como administrador, pega el comando y espera unos segundos. Al terminar debe aparecer “PortAlert se quitó por completo de este equipo” en verde. Si aparece un aviso amarillo, reinicia el equipo y vuelve a ejecutar el comando.</p>
           <CommandLine text={WINDOWS_UNINSTALL} />
         </div>
         <div className="uninstall__os">
@@ -374,6 +374,7 @@ function UnlinkDialog({
         </div>
         <div className="confirm__steps">
           <p className="confirm__steps-title">Después de desvincular</p>
+          <p className="confirm__text">En Windows, al terminar debe aparecer “PortAlert se quitó por completo de este equipo” en verde. Si aparece un aviso amarillo, reinicia el equipo y vuelve a ejecutar el comando.</p>
           <CopyBox title="Windows (PowerShell como administrador)" text={WINDOWS_UNINSTALL} />
           <CopyBox title="Linux (terminal)" text={LINUX_UNINSTALL} />
         </div>
