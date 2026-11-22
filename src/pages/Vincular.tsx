@@ -108,7 +108,7 @@ export default function Vincular() {
     try {
       const t = await createEnrollToken();
       setToken(t);
-      await downloadFile(installerUrl(t.enroll_token, os, API_URL), `instalar-portalert.${os === "linux" ? "sh" : "ps1"}`);
+      await downloadFile(installerUrl(t.enroll_token, os, API_URL), `instalar-portalert.${os === "linux" ? "sh" : "cmd"}`);
       setPhase("ready");
     } catch (err) {
       setPhase("idle");
@@ -120,7 +120,7 @@ export default function Vincular() {
   const command = token
     ? os === "linux"
       ? `curl -fsSLO ${installerUrl(token.enroll_token, "linux", API_URL)} && sudo bash instalar-${token.enroll_token}.sh`
-      : `powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr '${installerUrl(token.enroll_token, "windows", API_URL)}' -OutFile instalar.ps1; .\\instalar.ps1"`
+      : `powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr '${API_URL}/installers/instalar-${token.enroll_token}.ps1' -OutFile instalar.ps1; .\\instalar.ps1"`
     : "";
 
   async function copy() {
